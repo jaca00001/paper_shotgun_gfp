@@ -6,6 +6,7 @@ The protein data must be provided as a **CSV or TSV file** containing at least:
 
 - A column containing the **protein sequences**
 - A column containing the corresponding **fitness values**
+- A column with either the **number of mutations** for each sequence or the **aa_genotype**
 
 Data can be loaded in two ways:
 
