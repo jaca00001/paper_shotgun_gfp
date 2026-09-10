@@ -65,13 +65,13 @@ def main():
         
         # Creates a dot plot comparison for the two mutation selection strategies for each experiment in the folder. Works without Active Learning  
         # and with Active Learning (Plots the results fot the 0, 5 and 10 rounds of Active Learning) but not mixed.
-        plot_dot_plot_compariston(Path("project/results/FT")) 
+        plot_dot_plot_compariston(Path("results/FT")) 
         
         # Given a folder containing the results with and and one without Active Learning, the function selects the experiments which have been
         # run with both mutation selection strategies and plots the results for each experiment in a single figure.
         plot_results_comparison(
-                                base_path=Path("project/results/FT"),
-                                al_path=Path("project/results/AL"),
+                                base_path=Path("results/FT"),
+                                al_path=Path("results/AL"),
                                 peaks_df=peaks_df,
                                 cfg=cfg,
                                 mode="kde"
