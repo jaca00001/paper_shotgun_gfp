@@ -322,7 +322,7 @@ def train(train_dataset: TensorDataset, val_dataset: TensorDataset, al_cfg: Acti
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.lr, weight_decay=train_cfg.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,T_max=epochs)
-    scaler = torch.cuda.amp.GradScaler()
+    scaler = torch.amp.GradScaler()
     huber_loss = torch.nn.HuberLoss(delta=1.35)
 
     running_patience: int = 0
@@ -351,7 +351,7 @@ def train(train_dataset: TensorDataset, val_dataset: TensorDataset, al_cfg: Acti
             yb = yb.to(device, non_blocking=True)
             ob = ob.to(device, non_blocking=True)
 
-            with torch.cuda.amp.autocast(dtype=torch.float16):
+            with torch.amp.autocast(device_type='cuda'):
                 
                 out_reg: torch.Tensor = model(xb)
 
