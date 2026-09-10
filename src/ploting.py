@@ -469,8 +469,9 @@ def load_results(folder_path):
         name = p.name
 
         
-        if "train_cgreGFPWT" in name:
-                method = "cgreGFPWT-00"
+        
+        if name.count("train_") > 1:
+            method = "cgreGFPWT-00"
 
         elif "Multiple_Peaks" in name:
                 method = "s"
