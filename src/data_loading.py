@@ -76,7 +76,7 @@ def prepare_data_multiple_proteins(folderpath: str, sequence_row_label: str="seq
 
     for i, filename in enumerate(os.listdir(folderpath)):
         filepath: str = os.path.join(folderpath, filename)
-        df_tmp: pd.DataFrame = prepare_data_protein(filepath, sequence_row_label, target_row_label, rescale)
+        df_tmp: pd.DataFrame = prepare_data_protein(filepath, rescale, sequence_row_label, target_row_label)
         df_tmp["source_id"] = i
         dfs.append(df_tmp)
 
