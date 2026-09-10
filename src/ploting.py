@@ -519,7 +519,7 @@ def load_results(folder_path: Path)->list:
     
     return rows
     
-def plot_dot_plot_compariston(results: list):
+def plot_dot_plot_compariston(folder_path: Path):
     """
        Plots the performance of the two data selecion methods, given the data produced by the load_results function
 
@@ -530,6 +530,7 @@ def plot_dot_plot_compariston(results: list):
         Returns
         -------
     """
+    results = load_results(folder_path)
     
     df = pd.DataFrame(results)
 
