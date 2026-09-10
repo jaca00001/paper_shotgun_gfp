@@ -1,5 +1,7 @@
 import pandas as pd
+from pathlib import Path
 
+from src.ploting      import plot_dist_peak, plot_dot_plot_compariston, plot_results_comparison
 from src.utls         import get_peaks_sources, setup, create_config, run_training
 from src.data_loading import prepare_data_protein, prepare_data_multiple_proteins
 
@@ -57,6 +59,23 @@ def main():
                 test_peaks=test_data,
                 cfg=cfg
         )
+        
+        # Creates a violin plot for the distribution of the fitness values for each protein dataset in peaks_df.
+        plot_dist_peak(peak_dfs=peaks_df, mode="violin", cols=7)
+        
+        # Creates a dot plot comparison for the two mutation selection strategies for each experiment in the folder. Works without Active Learning  
+        # and with Active Learning (Plots the results fot the 0, 5 and 10 rounds of Active Learning) but not mixed.
+        plot_dot_plot_compariston(Path("project/results/FT")) 
+        
+        # Given a folder containing the results with and and one without Active Learning, the function selects the experiments which have been
+        # run with both mutation selection strategies and plots the results for each experiment in a single figure.
+        plot_results_comparison(
+                                base_path=Path("project/results/FT"),
+                                al_path=Path("project/results/AL"),
+                                peaks_df=peaks_df,
+                                cfg=cfg,
+                                mode="kde"
+                                )
 
 
 if __name__ == "__main__":
