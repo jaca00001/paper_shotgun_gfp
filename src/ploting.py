@@ -458,65 +458,79 @@ def save_metrics(model: ProtCNN, unlabeled_dataset: torch.utils.data.Dataset, lo
 
     return source_metrics[source]
 
-def load_results(folder_path: Path)->list:
-    """
-        Loads the resuslts of a experiment given the path.
-
-        Parameters
-        ----------
-        folder_path : Path
-            Path to the saved experiment
-        Returns
-        -------
-        list
-            Metrics of the experiment
-    """
-    
-    
-    sub_folders = defaultdict(list)
-    
-    for experiment in folder_path.iterdir():
-            match = re.search(r"(cgre[A-Za-z0-9]+-\d+)", experiment.name)
-            if match:
-                    sub_folders[match.group(1)].append(experiment)
-    
+def load_results(folder_path):
     rows = []
-    
-    for exp_id, paths in sub_folders.items():
+
+    for p in folder_path.iterdir():
+
+        if not p.is_dir():
+            continue
+
+        name = p.name
+
+        
+        if "train_cgreGFPWT" in name:
+                method = "cgreGFPWT-00"
+
+        elif "Multiple_Peaks" in name:
+                method = "s"
+
+        else:
+                print(f"Unknown method folder: {name}")
+                continue
+
+        exp_match = re.search(
+            r"test_(cgre[A-Za-z0-9]+-\d+)",
+            name
+        )
+
+        if not exp_match:
+            print(f"Could not find exp_id in: {name}")
+            continue
+
+        exp_id = exp_match.group(1)
+
+        plots_dir = p / "plots"
+
+        if not plots_dir.exists():
+            continue
+
             
-            for p in paths:
-                    plots_dir = p / "plots"
-    
-                    if not plots_dir.exists():
+        if name.startswith("AL"): 
+            rounds_to_check = [0, 5, 10]
+        else:
+            rounds_to_check = [0]     
+        
+        for round_num in rounds_to_check:
+
+            round_dir = plots_dir / f"round_{round_num}"
+
+            if not round_dir.is_dir():
+                continue
+
+            for source_dir in round_dir.iterdir():
+
+                metrics_file = source_dir / "metrics.txt"
+
+                if not metrics_file.exists():
+                    continue
+
+                metrics = {
+                    "exp_id": exp_id,
+                    "method": method,
+                    "round": round_num,
+                }
+
+                with open(metrics_file) as f:
+                    for line in f:
+                        if ":" not in line:
                             continue
-    
-                    for round_dir in  [plots_dir / "round_0", plots_dir / "round_5", plots_dir / "round_10"]: 
-                            if not round_dir.is_dir():
-                                    continue
-                        
-                            round_match = re.search(r"round_(\d+)", round_dir.name)
-                            round_num = int(round_match.group(1)) if round_match else -1
-                            
-                            for source_dir in round_dir.iterdir():
-                                    metrics_file = source_dir / "metrics.txt"
-    
-                                    if not metrics_file.exists():
-                                            continue
-    
-                                    metrics = {"exp_id": exp_id}
-                                    name = p.name
-                                    match = re.search(r"train_([^_]+)", name)
-                                    method = match.group(1) if match else "unknown"
-    
-                                    with open(metrics_file) as f:
-                                            for line in f:
-                                                    key, value = line.strip().split(":", 1)
-                                                    metrics[key.strip()] = float(value.strip())
-                                    
-                                    metrics["method"] = method
-                                    metrics["round"] = round_num
-                                    rows.append(metrics)
-    
+
+                        key, value = line.strip().split(":", 1)
+                        metrics[key.strip()] = float(value.strip())
+
+                rows.append(metrics)
+
     return rows
     
 def plot_dot_plot_compariston(folder_path: Path):
