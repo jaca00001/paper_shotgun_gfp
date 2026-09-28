@@ -145,6 +145,7 @@ def get_peaks_sources(peaks_df: List[pd.DataFrame], test_peak: List[str]=[])->Tu
     
     return  multiple_df, gene_to_id
 
+
 def get_mind_dists(model: ProtCNN, labeled_dataset: Subset, unlabeled_dataset: Subset, chunk_size: int=1024)->tuple[np.ndarray,torch.Tensor]:
     """
         Returns the min distance of the unlabaled embeddings to the already labeled embeddings.
@@ -167,7 +168,7 @@ def get_mind_dists(model: ProtCNN, labeled_dataset: Subset, unlabeled_dataset: S
         torch.Tensor
             The unlabeled embeddings.
     """
-
+    # are the model embedddings of dim [num of emb, 256] so works as intended
     labeled_emb: torch.Tensor = get_embeddings(model, labeled_dataset)
     unlabeled_emb: torch.Tensor = get_embeddings(model, unlabeled_dataset)
  
