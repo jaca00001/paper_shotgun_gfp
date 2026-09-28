@@ -365,7 +365,7 @@ def train(train_dataset: TensorDataset, val_dataset: TensorDataset, al_cfg: Acti
                 weights[mask] = al_cfg.new_query_weight 
                 weights: torch.Tensor = torch.ones_like(yb)
                     
-                loss_fn__no_reduc = torch.nn.HuberLoss(reduction="none")
+                loss_fn__no_reduc = torch.nn.HuberLoss(reduction="none", delta=1.35)
                 loss: torch.Tensor = loss_fn__no_reduc(out_reg, yb)
                     
                 loss = (loss * weights).mean()
